@@ -1,19 +1,5 @@
 <div align="center">
 
-# Sunone Aimbot C++
-
-[![C++](https://img.shields.io/badge/C%2B%2B-17-blue)](https://github.com/SunOner/sunone_aimbot_cpp)
-[![License MIT](https://badgen.net/github/license/SunOner/sunone_aimbot_cpp)](https://github.com/SunOner/sunone_aimbot_cpp/blob/main/LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/SunOner/sunone_aimbot_cpp?color=ffb500)](https://github.com/SunOner/sunone_aimbot_cpp)
-[![Discord server](https://badgen.net/discord/online-members/sunone)](https://discord.gg/sunone)
-
-  <p>
-    <a href="https://github.com/SunOner/sunone_aimbot_cpp/releases" target="_blank">
-      <img width="75%" src="https://github.com/SunOner/sunone_aimbot/blob/main/media/one.gif">
-    </a>
-  </p>
-</div>
-
 - **This project is actively being developed thanks to the people who support on [Boosty](https://boosty.to/sunone) and [Patreon](https://www.patreon.com/sunone). By providing active support, you receive enhanced AI models.**
 
 > **⚠️ WARNING:** TensorRT version 10 does not support the Pascal architecture (10 series graphics cards). Use only with GPUs of at least the 20 series.
