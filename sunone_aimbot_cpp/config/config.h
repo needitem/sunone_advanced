@@ -32,15 +32,17 @@ public:
     float minSpeedMultiplier;
     float maxSpeedMultiplier;
     float predictionInterval;
-    std::string input_method;   // "WIN32", "GHUB", "ARDUINO"
-    
+    std::string input_method;
+    bool no_recoil;
+    float no_recoil_strength;
+
     // Arduino
     int arduino_baudrate;
     std::string arduino_port;
     bool arduino_16_bit_mouse;
     bool arduino_enable_keys;
 
-    //Mouse shooting
+    // Mouse shooting
     bool auto_shoot;
     float bScope_multiplier;
 
@@ -65,24 +67,25 @@ public:
     std::vector<std::string> button_pause;
     std::vector<std::string> button_reload_config;
     std::vector<std::string> button_open_overlay;
+    std::vector<std::string> button_shoot;
 
     // Overlay
     int overlay_opacity;
     bool overlay_snow_theme;
 
     // Custom Classes
-    int class_player;                  // 0
-    int class_bot;                     // 1
-    int class_weapon;                  // 2
-    int class_outline;                 // 3
-    int class_dead_body;               // 4
-    int class_hideout_target_human;    // 5
-    int class_hideout_target_balls;    // 6
-    int class_head;                    // 7
-    int class_smoke;                   // 8
-    int class_fire;                    // 9
-    int class_third_person;            // 10
-    
+    int class_player;
+    int class_bot;
+    int class_weapon;
+    int class_outline;
+    int class_dead_body;
+    int class_hideout_target_human;
+    int class_hideout_target_balls;
+    int class_head;
+    int class_smoke;
+    int class_fire;
+    int class_third_person;
+
     // Debug
     bool show_window;
     bool show_fps;

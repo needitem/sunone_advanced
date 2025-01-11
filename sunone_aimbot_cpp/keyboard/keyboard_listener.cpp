@@ -17,7 +17,7 @@
 extern std::atomic<bool> shouldExit;
 extern std::atomic<bool> aiming;
 extern std::atomic<bool> detectionPaused;
-
+extern std::atomic<bool> shooting;
 extern MouseThread* globalMouseThread;
 
 bool isAnyKeyPressed(const std::vector<std::string>& keys)
@@ -40,12 +40,25 @@ void keyboardListener()
         // Aiming
         if (!config.auto_aim)
         {
-        aiming = isAnyKeyPressed(config.button_targeting) ||
-            (config.arduino_enable_keys && serial && serial->isOpen() && serial->aiming_active);
+            aiming.store(isAnyKeyPressed(config.button_targeting) ||
+                (config.arduino_enable_keys && serial && serial->isOpen() && serial->aiming_active));
         }
         else
         {
-            aiming = true;
+            aiming.store(true);
+        }
+
+        // Shooting detection
+        if (isAnyKeyPressed(config.button_shoot))
+        {
+            if (!shooting.load())
+            {
+                shooting.store(true);
+            }
+        }
+        else if (shooting.load())
+        {
+            shooting.store(false);
         }
 
         // Exit
@@ -90,7 +103,9 @@ void keyboardListener()
                         config.maxSpeedMultiplier,
                         config.predictionInterval,
                         config.auto_shoot,
-                        config.bScope_multiplier
+                        config.bScope_multiplier,
+                        config.no_recoil,
+                        config.no_recoil_strength
                     );
                 }
                 reloadPressed = true;

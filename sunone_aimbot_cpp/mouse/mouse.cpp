@@ -17,6 +17,7 @@
 
 extern std::atomic<bool> aiming;
 extern std::mutex configMutex;
+extern std::atomic<bool> shooting;
 
 MouseThread::MouseThread(
     int resolution,
@@ -29,6 +30,8 @@ MouseThread::MouseThread(
     double predictionInterval,
     bool auto_shoot,
     float bScope_multiplier,
+    bool no_recoil,
+    float no_recoil_strength,
     SerialConnection* serialConnection,
     GhubMouse* ghubMouse)
     :
@@ -43,6 +46,8 @@ MouseThread::MouseThread(
     prediction_interval(predictionInterval),
     auto_shoot(auto_shoot),
     bScope_multiplier(bScope_multiplier),
+    no_recoil(no_recoil),
+    no_recoil_strength(no_recoil_strength),
     prev_x(0),
     prev_y(0),
     prev_velocity_x(0),
@@ -60,7 +65,8 @@ double reset_prediction_time = 0.5;
 
 void MouseThread::updateConfig(int resolution, double dpi, double sensitivity, int fovX, int fovY,
     double minSpeedMultiplier, double maxSpeedMultiplier, double predictionInterval,
-    bool auto_shoot, float bScope_multiplier)
+    bool auto_shoot, float bScope_multiplier,
+    bool no_recoil, float no_recoil_strength)
 {
     this->screen_width = resolution;
     this->screen_height = resolution;
@@ -73,6 +79,8 @@ void MouseThread::updateConfig(int resolution, double dpi, double sensitivity, i
     this->prediction_interval = predictionInterval;
     this->auto_shoot = auto_shoot;
     this->bScope_multiplier = bScope_multiplier;
+    this->no_recoil = no_recoil;
+    this->no_recoil_strength = no_recoil_strength;
     this->center_x = resolution / 2;
     this->center_y = resolution / 2;
     this->max_distance = std::sqrt(resolution * resolution + resolution * resolution) / 2;
@@ -188,7 +196,7 @@ void MouseThread::moveMouse(const Target& target)
     std::lock_guard<std::mutex> lock(input_method_mutex);
 
     std::pair<double, double> predicted_position = std::make_pair(0.0, 0.0);
-    std::pair<double, double>  movement = std::make_pair(0.0, 0.0);
+    std::pair<double, double> movement = std::make_pair(0.0, 0.0);
 
     if (prediction_interval >= 0.01)
     {
@@ -202,6 +210,11 @@ void MouseThread::moveMouse(const Target& target)
 
     int move_x = static_cast<INT>(movement.first);
     int move_y = static_cast<INT>(movement.second);
+
+    if (no_recoil && shooting.load())
+    {
+        move_y += static_cast<int>(no_recoil_strength);
+    }
 
     if (serial)
     {

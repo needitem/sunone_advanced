@@ -44,6 +44,8 @@ bool Config::loadConfig(const std::string& filename)
         maxSpeedMultiplier = 4.0f;
         predictionInterval = 0.20f;
         input_method = "WIN32";
+        no_recoil = false;
+        no_recoil_strength = 1.0f;
 
         // Arduino
         arduino_baudrate = 115200;
@@ -76,6 +78,7 @@ bool Config::loadConfig(const std::string& filename)
         button_pause = splitString("F3");
         button_reload_config = splitString("F4");
         button_open_overlay = splitString("Home");
+        button_shoot = splitString("LeftMouseButton");
 
         // Overlay
         overlay_opacity = 225;
@@ -138,6 +141,8 @@ bool Config::loadConfig(const std::string& filename)
         maxSpeedMultiplier = pt.get<float>("maxSpeedMultiplier", 4.0f);
         predictionInterval = pt.get<float>("predictionInterval", 0.5f);
         input_method = pt.get<std::string>("input_method", "WIN32");
+        no_recoil = pt.get<bool>("no_recoil", false);
+        no_recoil_strength = pt.get<float>("no_recoil_strength", 1.0f);
 
         // Arduino
         arduino_baudrate = pt.get<int>("arduino_baudrate", 115200);
@@ -170,6 +175,7 @@ bool Config::loadConfig(const std::string& filename)
         button_pause = splitString(pt.get<std::string>("button_pause", "F3"));
         button_reload_config = splitString(pt.get<std::string>("button_reload_config", "F4"));
         button_open_overlay = splitString(pt.get<std::string>("button_open_overlay", "Home"));
+        button_shoot = splitString(pt.get<std::string>("button_shoot", "LeftMouseButton"));
 
         // Overlay
         overlay_opacity = pt.get<int>("overlay_opacity", 225);
@@ -254,6 +260,8 @@ bool Config::saveConfig(const std::string& filename)
     file << "minSpeedMultiplier = " << std::fixed << std::setprecision(1) << minSpeedMultiplier << "\n";
     file << "maxSpeedMultiplier = " << std::fixed << std::setprecision(1) << maxSpeedMultiplier << "\n";
     file << "predictionInterval = " << std::fixed << std::setprecision(2) << predictionInterval << "\n";
+    file << "no_recoil = " << (no_recoil ? "true" : "false") << "\n";
+    file << "no_recoil_strength = " << std::fixed << std::setprecision(1) << no_recoil_strength << "\n";
     file << "# WIN32, GHUB, ARDUINO\n";
     file << "input_method = " << input_method << "\n\n";
 
@@ -287,7 +295,8 @@ bool Config::saveConfig(const std::string& filename)
     file << "button_exit = " << joinStrings(button_exit) << "\n";
     file << "button_pause = " << joinStrings(button_pause) << "\n";
     file << "button_reload_config = " << joinStrings(button_reload_config) << "\n";
-    file << "button_open_overlay = " << joinStrings(button_open_overlay) << "\n\n";
+    file << "button_open_overlay = " << joinStrings(button_open_overlay) << "\n";
+    file << "button_shoot = " << joinStrings(button_shoot) << "\n\n";
 
     file << "# Overlay\n";
     file << "overlay_opacity = " << overlay_opacity << "\n";

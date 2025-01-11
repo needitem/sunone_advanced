@@ -309,6 +309,8 @@ void OverlayThread()
     bool prev_auto_aim = config.auto_aim;
 
     // Mouse
+    bool prev_no_recoil = config.no_recoil;
+    float prev_no_recoil_strength = config.no_recoil_strength;
     int prev_dpi = config.dpi;
     float prev_sensitivity = config.sensitivity;
     int prev_fovX = config.fovX;
@@ -649,6 +651,12 @@ void OverlayThread()
                         if (config.auto_shoot)
                         {
                             ImGui::SliderFloat("bScope Multiplier", &config.bScope_multiplier, 0.5f, 2.0f, "%.1f");
+                        }
+
+                        ImGui::Checkbox("No Recoil", &config.no_recoil);
+                        if (config.no_recoil)
+                        {
+                            ImGui::SliderFloat("No Recoil Strength", &config.no_recoil_strength, 1.0f, 50.0f, "%.1f");
                         }
 
                         // INPUT METHODS
@@ -1394,7 +1402,10 @@ void OverlayThread()
                             config.maxSpeedMultiplier,
                             config.predictionInterval,
                             config.auto_shoot,
-                            config.bScope_multiplier);
+                            config.bScope_multiplier,
+                            config.no_recoil,
+                            config.no_recoil_strength
+                        );
 
                         config.saveConfig();
                     }
@@ -1460,6 +1471,31 @@ void OverlayThread()
                         prev_window_size = config.window_size;
                         prev_screenshot_delay = config.screenshot_delay;
                         prev_verbose = config.verbose;
+                        config.saveConfig();
+                    }
+
+                    // No Recoil
+                    if (prev_no_recoil != config.no_recoil ||
+                        prev_no_recoil_strength != config.no_recoil_strength)
+                    {
+                        prev_no_recoil = config.no_recoil;
+                        prev_no_recoil_strength = config.no_recoil_strength;
+
+                        globalMouseThread->updateConfig(
+                            config.detection_resolution,
+                            config.dpi,
+                            config.sensitivity,
+                            config.fovX,
+                            config.fovY,
+                            config.minSpeedMultiplier,
+                            config.maxSpeedMultiplier,
+                            config.predictionInterval,
+                            config.auto_shoot,
+                            config.bScope_multiplier,
+                            config.no_recoil,
+                            config.no_recoil_strength
+                        );
+
                         config.saveConfig();
                     }
 

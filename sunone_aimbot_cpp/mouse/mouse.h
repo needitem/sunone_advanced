@@ -39,15 +39,22 @@ private:
     std::atomic<bool> mouse_pressed{ false };
 
 public:
+    bool no_recoil;
+    float no_recoil_strength;
+
     MouseThread(int resolution, int dpi, double sensitivity, int fovX, int fovY,
         double minSpeedMultiplier, double maxSpeedMultiplier, double predictionInterval,
         bool auto_shoot, float bScope_multiplier,
+        bool no_recoil = false,
+        float no_recoil_strength = 1.0f,
         SerialConnection* serialConnection = nullptr,
         GhubMouse* gHub = nullptr);
 
     void updateConfig(int resolution, double dpi, double sensitivity, int fovX, int fovY,
         double minSpeedMultiplier, double maxSpeedMultiplier, double predictionInterval,
-        bool auto_shoot, float bScope_multiplier);
+        bool auto_shoot, float bScope_multiplier,
+        bool no_recoil = false,
+        float no_recoil_strength = 1.0f);
 
     std::pair<double, double> predict_target_position(double target_x, double target_y);
     std::pair<double, double> calc_movement(double target_x, double target_y);

@@ -47,6 +47,7 @@ std::atomic<bool> capture_window_changed(false);
 std::atomic<bool> detector_model_changed(false);
 std::atomic<bool> show_window_changed(false);
 std::atomic<bool> input_method_changed(false);
+std::atomic<bool> shooting(false);
 
 void initializeInputMethod()
 {
@@ -95,7 +96,6 @@ void initializeInputMethod()
 void mouseThreadFunction(MouseThread& mouseThread)
 {
     int lastDetectionVersion = -1;
-
     std::chrono::milliseconds timeout(30);
 
     while (!shouldExit)
@@ -109,10 +109,33 @@ void mouseThreadFunction(MouseThread& mouseThread)
         
         if (shouldExit) break;
         
-        if (detector.detectionVersion <= lastDetectionVersion) continue;
+        if (detector.detectionVersion <= lastDetectionVersion) 
+        {
+            if (mouseThread.no_recoil && shooting.load())
+            {
+                int move_y = static_cast<int>(mouseThread.no_recoil_strength);
+                if (serial)
+                {
+                    serial->move(0, move_y);
+                }
+                else if (gHub)
+                {
+                    gHub->mouse_xy(0, move_y);
+                }
+                else
+                {
+                    INPUT input = { 0 };
+                    input.type = INPUT_MOUSE;
+                    input.mi.dx = 0;
+                    input.mi.dy = move_y;
+                    input.mi.dwFlags = MOUSEEVENTF_MOVE | MOUSEEVENTF_VIRTUALDESK;
+                    SendInput(1, &input, sizeof(INPUT));
+                }
+            }
+            continue;
+        }
         
         lastDetectionVersion = detector.detectionVersion;
-        
         boxes = detector.detectedBoxes;
         classes = detector.detectedClasses;
         
@@ -230,6 +253,8 @@ int main()
             config.predictionInterval,
             config.auto_shoot,
             config.bScope_multiplier,
+            config.no_recoil,
+            config.no_recoil_strength,
             serial,
             gHub
         );
